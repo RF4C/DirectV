@@ -674,7 +674,7 @@
     <div class="container">
         <header>
             <div class="logo">DirectV</div>
-            <button class="nav-btn">다운로드</button>
+            <a href="download.html" class="nav-btn">다운로드</a>
         </header>
 
         <section class="hero">
@@ -686,7 +686,7 @@
                 당신의 음성은 왜 제3자의 서버를 거쳐야 할까요?<br>
                 DirectV는 Hamachi를 이용한 진정한 Peer-to-Peer 직접 연결입니다.
             </p>
-            <button class="cta-button">지금 시작하기</button>
+            <a href="download.html" class="cta-button" style="display: inline-block; text-decoration: none;">지금 시작하기</a>
         </section>
 
         <section class="stats-section">
@@ -1098,7 +1098,7 @@
                 설치 파일은 50MB 미만, 설치 시간은 1분 미만.<br>
                 복잡한 설정 없이 바로 친구들과 연결하세요.
             </p>
-            <button class="cta-button" style="margin-top: 30px;">DirectV 다운로드</button>
+            <a href="download.html" class="cta-button" style="margin-top: 30px; display: inline-block; text-decoration: none;">DirectV 다운로드</a>
             <p style="color: #808080; margin-top: 20px; font-size: 14px;">
                 Windows 10/11, macOS 10.15+, Linux (Ubuntu 20.04+) 지원<br>
                 Hamachi 설치 필요 (무료)
@@ -1177,8 +1177,8 @@
         observer.observe(document.querySelector('.tech-section'));
 
         // 버튼 클릭 이벤트
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', function() {
+        document.querySelectorAll('button, a.cta-button').forEach(button => {
+            button.addEventListener('click', function(e) {
                 this.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     this.style.transform = '';
