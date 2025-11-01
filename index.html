@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DirectV - 진정한 P2P 음성 통신</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(79, 172, 254, 0.5);
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(79, 172, 254, 0.3);
+            border-color: #4facfe;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.5)); }
+            to { filter: drop-shadow(0 0 40px rgba(79, 172, 254, 0.8)); }
+        }
+
+        .hero p {
+            font-size: 24px;
+            color: #a0a0a0;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border: none;
+            color: white;
+            padding: 20px 60px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 10px 40px rgba(79, 172, 254, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover:before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(79, 172, 254, 0.6);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            padding: 80px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .feature-card:hover:before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #4facfe;
+            box-shadow: 0 20px 60px rgba(79, 172, 254, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #4facfe;
+        }
+
+        .feature-card p {
+            color: #b0b0b0;
+            line-height: 1.8;
+        }
+
+        .comparison {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 30px;
+            padding: 60px;
+            margin: 80px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .vs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .vs-card {
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid;
+        }
+
+        .vs-card.winner {
+            border-color: #4facfe;
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .vs-card.loser {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+            opacity: 0.7;
+        }
+
+        .vs-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .vs-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .vs-card li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .vs-card li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .vs-card.winner li:before {
+            color: #4facfe;
+        }
+
+        .vs-card.loser li:before {
+            content: '✗';
+            color: #ff6b6b;
+        }
+
+        .roadmap {
+            padding: 80px 0;
+        }
+
+        .roadmap h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .roadmap-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border-left: 4px solid #4facfe;
+            transition: all 0.3s;
+        }
+
+        .roadmap-item:hover {
+            background: rgba(79, 172, 254, 0.1);
+            transform: translateX(10px);
+        }
+
+        .roadmap-icon {
+            font-size: 40px;
+            margin-right: 30px;
+        }
+
+        .roadmap-content h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4facfe;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+
+        footer p {
+            color: #808080;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+
+            .vs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">DirectV</div>
+            <button class="nav-btn">다운로드</button>
+        </header>
+
+        <section class="hero">
+            <h1>DirectV</h1>
+            <p>진짜 P2P 음성 통신의 시작<br>
+            중간 서버 없이, 지연 없이, 완벽한 보안으로</p>
+            <button class="cta-button">지금 시작하기</button>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>거의 0에 가까운 지연</h3>
+                <p>Hamachi 터널을 통한 직접 P2P 연결로 중간 서버를 거치지 않습니다. 실시간으로 음성을 전달하세요.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>완벽한 보안</h3>
+                <p>중앙 서버가 없으니 데이터 유출도 없습니다. 당신과 상대방만의 암호화된 직접 연결입니다.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>진정한 P2P</h3>
+                <p>말만 P2P가 아닙니다. Hamachi를 이용한 실제 Peer-to-Peer 연결로 서버 부하도, 다운타임도 없습니다.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>완전 무료</h3>
+                <p>서버 비용이 없으니 당연히 무료입니다. 구독료도, 제한도 없습니다.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>게이머를 위한 설계</h3>
+                <p>게임 중 최소한의 리소스로 최고의 음질을 제공합니다. 렉 걱정 없이 팀플레이하세요.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>계속 진화합니다</h3>
+                <p>화면 공유, 텍스트 채팅 등 더 많은 기능이 곧 추가됩니다. 하지만 여전히 가볍게!</p>
+            </div>
+        </section>
+
+        <section class="comparison">
+            <h2>왜 Discord를 버려야 할까요?</h2>
+            <div class="vs-grid">
+                <div class="vs-card loser">
+                    <h3>❌ Discord</h3>
+                    <ul>
+                        <li>중앙 서버를 거쳐 음성 전달</li>
+                        <li>서버 위치에 따른 지연 발생</li>
+                        <li>서버 다운 시 서비스 중단</li>
+                        <li>음성 데이터가 서버에 전송됨</li>
+                        <li>무거운 클라이언트 프로그램</li>
+                        <li>Nitro 구독 압박</li>
+                    </ul>
+                </div>
+
+                <div class="vs-card winner">
+                    <h3>✨ DirectV</h3>
+                    <ul>
+                        <li>직접 P2P 연결로 즉시 전달</li>
+                        <li>물리적 거리만이 변수</li>
+                        <li>중앙 서버 없어 항상 안정적</li>
+                        <li>음성이 당신과 상대방만 오감</li>
+                        <li>가벼운 클라이언트</li>
+                        <li>영원히 무료</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="roadmap">
+            <h2>로드맵</h2>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-icon">🎤</div>
+                <div class="roadmap-content">
+                    <h3>Phase 1: P2P 음성 통신 (현재)</h3>
+                    <p>Hamachi를 이용한 초저지연 음성 송수신 기능 완성</p>
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-icon">💬</div>
+                <div class="roadmap-content">
+                    <h3>Phase 2: 텍스트 채팅</h3>
+                    <p>음성과 함께 사용할 수 있는 가볍고 빠른 채팅 기능 추가</p>
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-icon">🖥️</div>
+                <div class="roadmap-content">
+                    <h3>Phase 3: 화면 공유</h3>
+                    <p>게임 플레이나 작업 화면을 P2P로 직접 공유하는 기능</p>
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-icon">🎨</div>
+                <div class="roadmap-content">
+                    <h3>Phase 4: 더 많은 기능</h3>
+                    <p>커뮤니티의 피드백을 반영한 추가 기능들</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>DirectV - 진정한 P2P 통신의 미래</p>
+            <p style="margin-top: 10px; font-size: 12px;">© 2025 DirectV. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // 별 생성
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // 버튼 클릭 이벤트
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // 스크롤 애니메이션
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.feature-card, .roadmap-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
